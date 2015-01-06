@@ -21,7 +21,7 @@ foreach($coms as $com){
     echo 'Start connecting to ' . $com . PHP_EOL;
     $proc = $os->run($com, $timeout);
     
-    // Запускаем получаем PID  запущенного скрипта
+    // Запускаем, получаем PID  запущенного скрипта
     $pid = trim(fgets($proc)); 
     echo 'PID: ' . $pid . PHP_EOL;
     
@@ -37,7 +37,7 @@ foreach($coms as $com){
     echo 'Finish connceted to ' . $com . PHP_EOL;
     
     //читаем, что получили из порта
-    $result = file_get_contents(PATH . '/readers/ports/' . $com . 'result.txt');
+    $result = file_get_contents(PATH . '/readers/ports/' . md5($com) . 'result.txt');
     echo 'RESULT: ' . $result . PHP_EOL;
     
     echo PHP_EOL;
