@@ -1,16 +1,13 @@
 <?php
 
 //Этот класс только для работы с WINDOWS
-class OSWorker{
+class OSWorker extends Worker{
     
-    //Убить процесс с заданным PID'ом
-    public function killPID($pid){
-        shell_exec('kill -9 ' . $pid . ' 2>/dev/null &');
-    }
+    private $fPort;
     
-    //Запустить PHP скрипт
-    public function run($port){
-        return popen(PHP . ' ' .PATH . '/readers/readPort.php ' . $port . ' 2>/dev/null &', 'r');
+    
+    public function getFPort(){
+        return $this->fPort;
     }
     
     //Установить настройки для работы с  COM-портом
@@ -19,12 +16,20 @@ class OSWorker{
     }
     
     //Открыть порт и вернуть указатель
-    public function openPort($port, $mode = 'r'){
-        $this->setMode($port);
-        $fp = fopen($port, $mode);
-        sleep(1);
+    public function open($port, $mode = 'r'){
+        $port = '/dev/'.$port;
         
-        return $fp;
+        $this->setMode($port);
+        
+        $this->fPort = fopen($port, $mode);
+        if(!$this->fPort){
+            echo 'Can\'t open port: ' . $port;
+            return false;
+        }
+        
+        //Необходима задержка для открытия порта
+        sleep(2);
+        return true;
     }
     
     //Получить список портов
@@ -51,12 +56,7 @@ class OSWorker{
             }
         }
         
-        $coms = array();
-        foreach($comsAttached[2] as $com){
-            $coms[] = '/dev/'.$com;
-        }
-        
-        return $coms;
+        return $comsAttached[2];
     }
 }
 

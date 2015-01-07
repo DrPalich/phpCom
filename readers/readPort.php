@@ -14,24 +14,21 @@ include_once __DIR__ . '/../includes/includes.php';
 $com  = $argv[1];
 
 //Файл для вывода результата
-$file = PATH . '/readers/ports/' . md5($com) . 'result.txt';
+$file = PATH . '/readers/ports/' . $com . '_result.txt';
 file_put_contents($file, '');
 
 //открываем порт для записи и чтения
-$fp = $os->openPort($com , "r+");
+$fp = $PORT->open($com , "r+");
 if (!$fp) {
     die();
 } 
-else {
-    //Who are you?
-    fwrite($fp, "#wau#");
-    
-    //Пауза, чтобы успело записаться
-    sleep(1);
-    
-    //Читаем ответ
-    $content = fgets($fp); 
-    
-    file_put_contents($file, $content);
-}
-fclose ($fp);
+
+//Who are you?
+$PORT->write("#wau#");
+
+//Читаем ответ
+$PORT->gets(); 
+
+file_put_contents($file, $content);
+
+$PORT->close();

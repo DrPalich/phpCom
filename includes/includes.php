@@ -11,6 +11,9 @@ define('PATH', __DIR__ . '/../');
 
 $os = php_uname();
 
+include_once PATH . 'includes/osClasses/classInfo.php';
+include_once PATH . 'includes/functions.php';
+
 if(strtolower(substr($os, 0, 7)) == 'windows'){
     define('OS',  'WINDOWS');
     define('PHP', 'D:/WebServices/nginx/php/php.exe');
@@ -25,4 +28,4 @@ else{
     die("Not suuport OS");
 }
 
-$os = new OSWorker();
+$PORT = new OSWorker();

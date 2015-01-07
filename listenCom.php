@@ -4,7 +4,7 @@ error_reporting(E_ALL);
 
 include __DIR__ . '/includes/includes.php';
 
-$coms     = $os->getComs();
+$coms     = $PORT->getComs();
 
 if(empty($coms)){
     echo 'Not found COM-ports';
@@ -19,7 +19,8 @@ foreach($coms as $com){
      
     // Запускаем скрипт чтения ПОРТА
     echo 'Start connecting to ' . $com . PHP_EOL;
-    $proc = $os->run($com);
+    $proc = popenReadPort($com);
+
     
     // Запускаем, получаем PID  запущенного скрипта
     $pid = trim(fgets($proc)); 
@@ -29,7 +30,7 @@ foreach($coms as $com){
     sleep($timeout);
     
     //Завершаем запущенный скрипт
-    $os->killPID($pid);
+    killPID($pid);
     echo 'Killed PID ' . $pid . PHP_EOL;
     
     //Закрываем указатель
@@ -37,7 +38,7 @@ foreach($coms as $com){
     echo 'Finish connceted to ' . $com . PHP_EOL;
     
     //читаем, что получили из порта
-    $result = file_get_contents(PATH . '/readers/ports/' . md5($com) . 'result.txt');
+    $result = file_get_contents(PATH . 'readers/ports/' . $com . '_result.txt');
     echo 'RESULT: ' . $result . PHP_EOL;
     
     echo PHP_EOL;
