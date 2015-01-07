@@ -5,12 +5,12 @@ class OSWorker{
     
     //Убить процесс с заданным PID'ом
     public function killPID($pid){
-        shell_exec('start "" /b taskkill  /f /pid ' . $pid);
+        shell_exec('1>nul 2>&1 taskkill  /f /t /pid ' . $pid );
     }
     
     //Запустить PHP скрипт
-    public function run($port, $timeout){
-        return popen('start "" /b ' . PHP . ' ' .PATH . '/readers/readPort.php ' . $port . ' ' . ($timeout -1), 'r');
+    public function run($port){
+        return popen('start "" /b ' . PHP . ' ' .PATH . '/readers/readPort.php ' . $port, 'r');
     }
     
     //Устновить настройки для работы с  COM-портом
@@ -21,7 +21,10 @@ class OSWorker{
     //Открыть порт и вернуть указатель
     public function openPort($port, $mode = 'r'){
         $this->setMode($port);
-        return fopen($port . ':', $mode);
+        $fp = fopen($port . ':', $mode);
+        //Задержка... Для того, чтоб порт успел открыться
+        sleep(2);
+        return $fp;
     }
     
     //Получить список COM-портов

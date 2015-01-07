@@ -11,8 +11,7 @@ echo getmypid() . PHP_EOL;
 include_once __DIR__ . '/../includes/includes.php';
 
 //Читаем параметры
-$com     = $argv[1];
-$timeout = $argv[2];
+$com  = $argv[1];
 
 //Файл для вывода результата
 $file = PATH . '/readers/ports/' . md5($com) . 'result.txt';
@@ -24,15 +23,13 @@ if (!$fp) {
     die();
 } 
 else {
-    
-    //Пауза
-    sleep(2);
-    
     //Who are you?
     fwrite($fp, "#wau#");
     
-    //Читаем ответ
+    //Пауза, чтобы успело записаться
     sleep(1);
+    
+    //Читаем ответ
     $content = fgets($fp); 
     
     file_put_contents($file, $content);

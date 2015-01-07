@@ -14,12 +14,12 @@ else{
     echo 'Found ' . count($coms) . ' COM-ports' . PHP_EOL . PHP_EOL;
 }
 
-$timeout = 8;
+$timeout = 4;
 foreach($coms as $com){
      
     // Запускаем скрипт чтения ПОРТА
     echo 'Start connecting to ' . $com . PHP_EOL;
-    $proc = $os->run($com, $timeout);
+    $proc = $os->run($com);
     
     // Запускаем, получаем PID  запущенного скрипта
     $pid = trim(fgets($proc)); 

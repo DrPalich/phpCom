@@ -9,8 +9,8 @@ class OSWorker{
     }
     
     //Запустить PHP скрипт
-    public function run($port, $timeout){
-        return popen(PHP . ' ' .PATH . '/readers/readPort.php ' . $port . ' ' . ($timeout -1) . ' 2>/dev/null &', 'r');
+    public function run($port){
+        return popen(PHP . ' ' .PATH . '/readers/readPort.php ' . $port . ' 2>/dev/null &', 'r');
     }
     
     //Устновить настройки для работы с  COM-портом
@@ -21,7 +21,10 @@ class OSWorker{
     //Открыть порт и вернуть указатель
     public function openPort($port, $mode = 'r'){
         $this->setMode($port);
-        return fopen($port, $mode);
+        $fp = fopen($port, $mode);
+        sleep(1);
+        
+        return $fp;
     }
     
     //Получить список COM-портов
