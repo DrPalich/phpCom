@@ -12,13 +12,13 @@ define('PATH', __DIR__ . '/../');
 $os = php_uname();
 
 if(strtolower(substr($os, 0, 7)) == 'windows'){
-    define('PHP', 'D:/WebServices/nginx/php/php.exe');
     define('OS',  'WINDOWS');
+    define('PHP', 'D:/WebServices/nginx/php/php.exe');
     include_once PATH . 'includes/osClasses/windowsClass.php'; 
 }
 elseif(strtolower(substr($os, 0, 5)) == 'linux'){
-    define('PHP', '/usr/bin/php');
     define('OS',  'LINUX');
+    define('PHP', '/usr/bin/php');
     include_once PATH . 'includes/osClasses/linuxClass.php'; 
 }
 else{

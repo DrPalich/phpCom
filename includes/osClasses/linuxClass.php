@@ -13,7 +13,7 @@ class OSWorker{
         return popen(PHP . ' ' .PATH . '/readers/readPort.php ' . $port . ' 2>/dev/null &', 'r');
     }
     
-    //Устновить настройки для работы с  COM-портом
+    //Установить настройки для работы с  COM-портом
     public function setMode($port){
         shell_exec('stty -F ' . $port . ' 4800 raw');
     }
@@ -27,7 +27,7 @@ class OSWorker{
         return $fp;
     }
     
-    //Получить список COM-портов
+    //Получить список портов
     public function getComs(){
         $coms = shell_exec("dmesg | grep tty");
         preg_match_all("/: (.*) now attached to (tty[^\n]+)/i", $coms, $comsAttached);
