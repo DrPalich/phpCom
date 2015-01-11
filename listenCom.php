@@ -14,36 +14,67 @@ else{
     echo 'Found ' . count($coms) . ' COM-ports' . PHP_EOL . PHP_EOL;
 }
 
-$timeout = 4;
+$success = false;
+
+$timeout = 10;
 foreach($coms as $com){
      
     // Запускаем скрипт чтения ПОРТА
-    echo 'Start connecting to ' . $com . PHP_EOL;
-    $proc = popenReadPort($com);
-
+    echo 'Open port  ' . $com . ' to READ' . PHP_EOL;
+    $process = popenReader($com);
     
-    // Запускаем, получаем PID  запущенного скрипта
-    $pid = trim(fgets($proc)); 
-    echo 'PID: ' . $pid . PHP_EOL;
+    //Получаем ID процесса чтния
+    $IDreader = trim(fgets($process));
+    _log('PID: ' . $IDreader);
+ 
+    
+    $PORT->write('#wau#', $com);
     
     //Ждем
     sleep($timeout);
     
-    //Завершаем запущенный скрипт
-    killPID($pid);
-    echo 'Killed PID ' . $pid . PHP_EOL;
-    
-    //Закрываем указатель
-    pclose($proc);
-    echo 'Finish connceted to ' . $com . PHP_EOL;
-    
     //читаем, что получили из порта
-    $result = file_get_contents(PATH . 'readers/ports/' . $com . '_result.txt');
-    echo 'RESULT: ' . $result . PHP_EOL;
-    
+    $result = getPortResult($com); 
+    echo 'RESULT: '. PHP_EOL; 
+    $result = parseResponce($result[0]);
+    print_r($result);
     echo PHP_EOL;
+    echo PHP_EOL;
+    
+    if($result[0]['data'] == 'ArduinoHome'){ 
+        $success = true;
+        break;
+    }    
+     
+    //Завершаем запущенный скрипт
+    killPID($IDreader);
+    echo 'Killed PID ' . $IDreader . PHP_EOL;
+    
 }
 
 
+if(!$success) die();
+getPortResult($com, true);
+$PORT->open($com);
+$PORT->write("0e0r01|TH");
+
+while(1){
+    
+    sleep(3);
+    
+    $results = getPortResult($com, true);
+    $results = parseResponce($results);
+    
+    print_r($results);
+    
+    
+    die();
+    
+}
+
+
+//Завершаем запущенный скрипт
+killPID($IDreader);
+echo 'Killed PID ' . $IDreader . PHP_EOL;
 echo 'END' . PHP_EOL;
 

@@ -7,20 +7,21 @@
  */
 
 class Worker{
-    private $port;
+    
     private $fPort;
     
-    public function write($data, $delay = 1){
+    public function write($data, $delay_ms = 0){
         $this->checkfPort();
         
-        fwrite($this->fPort, $data);
-        sleep($delay);
+        fwrite($this->fPort, $data . "\n");
+        delay($delay_ms);
+
     }
     
     public function gets(){
         $this->checkfPort();
         
-        return fgets($this->fPort);
+        return fgets($this->fPort, 1024);
     }
     
     private function checkfPort(){

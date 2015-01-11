@@ -5,6 +5,10 @@ class OSWorker extends Worker{
     
     private $fPort;
     
+    public function close(){
+        pclose($this->fPort);
+    }
+    
     
     public function getFPort(){
         return $this->fPort;
@@ -12,23 +16,59 @@ class OSWorker extends Worker{
     
     //Установить настройки для работы с  COM-портом
     public function setMode($port){
-        shell_exec('stty -F ' . $port . ' 4800 raw');
+        
+        _log('start set params port');
+        
+        shell_exec('stty 9600 -F ' . $port . ' raw');
+        
+        _log('finish set parrams port');
+        
+    }
+    
+    //Читаем
+    public function read(){
+        return fgets($this->fPort, 1024);
+    }
+    
+    public function write($data, $port = ''){
+        $port = ($port) ? '/dev/'.$port : $this->port;
+        
+        if(empty($port)) return false;
+        
+        $command = 'echo "' . $data . '" > ' . $port;
+        
+        _log('Command: ' . $command . ' sending...');
+        
+        if(shell_exec($command) === false){
+            _log('Command: ' . $command . ' not send');
+        }
+        
+        _log('Command: ' . $command . ' sended');
+        
+        return true;
     }
     
     //Открыть порт и вернуть указатель
     public function open($port, $mode = 'r'){
-        $port = '/dev/'.$port;
+        $port       = '/dev/'.$port;
+        $this->port = $port;
         
         $this->setMode($port);
         
-        $this->fPort = fopen($port, $mode);
+        $cat = 'cat ' . $port;
+        
+        _log('Start open port "cat"');
+        
+        $this->fPort = popen('cat ' . $port, $mode);
+        
+        
         if(!$this->fPort){
-            echo 'Can\'t open port: ' . $port;
+            _log('Can\'t open port: ' . $port);
             return false;
         }
         
-        //Необходима задержка для открытия порта
-        sleep(2);
+        _log('Finish open port "cat"');
+        
         return true;
     }
     
